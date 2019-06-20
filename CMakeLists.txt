@@ -119,6 +119,11 @@ if(BUILD_SHARED_LIBS)
         VERSION ${VERSION}
         SOVERSION ${VERSION_MAJOR}.${VERSION_MINOR}
     DEFINE_SYMBOL BZ_EXPORT)
+    if(MSVC)
+      # msvc does not append 'lib' - do it here to have consistent name
+      set_target_properties(${LIB_NAME} PROPERTIES PREFIX "lib")
+      set_target_properties(${LIB_NAME} PROPERTIES IMPORT_PREFIX "lib")
+    endif()
 elseif(OSX_FRAMEWORK)
     add_library(${LIB_NAME} SHARED ${LIB_SRCS} ${PUBLIC_HEADERS})
     set_target_properties(${LIB_NAME} PROPERTIES
