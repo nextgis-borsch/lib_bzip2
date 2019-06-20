@@ -69,6 +69,10 @@ if(CMAKE_GENERATOR_TOOLSET MATCHES "v([0-9]+)_xp")
     add_definitions(-D_WIN32_WINNT=0x0501)
 endif()
 
+if(WIN32)
+    add_definitions( -D_USRDLL -D_WINDOWS )
+endif()
+
 add_definitions(-D_FILE_OFFSET_BITS=64)
 
 include(util)
@@ -142,17 +146,17 @@ endif()
 
 add_executable(bzip2 bzip2.c)
 target_link_libraries(bzip2 ${LIB_NAME})
+target_compile_definitions(bzip2 PUBLIC BZ_IMPORT)
 
 add_executable(bzip2recover bzip2recover.c)
 target_link_libraries(bzip2recover ${LIB_NAME})
-
-set(INSTALL_TARGETS ${LIB_NAME} bzip2 bzip2recover)
+target_compile_definitions(bzip2recover PUBLIC BZ_IMPORT)
 
 set(PACKAGE_NAME ${PROJECT_NAME})
 string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
 
 if (NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
-  install(TARGETS ${INSTALL_TARGETS}
+    install(TARGETS ${LIB_NAME}
         EXPORT ${PACKAGE_UPPER_NAME}Targets
         RUNTIME DESTINATION ${INSTALL_BIN_DIR}
         LIBRARY DESTINATION ${INSTALL_LIB_DIR}
@@ -160,6 +164,13 @@ if (NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
         INCLUDES DESTINATION ${INSTALL_INC_DIR}
         FRAMEWORK DESTINATION ${INSTALL_LIB_DIR}
     )
+    install(TARGETS bzip2 bzip2recover
+          RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+          LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+          ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+          INCLUDES DESTINATION ${INSTALL_INC_DIR}
+          FRAMEWORK DESTINATION ${INSTALL_LIB_DIR}
+      )
 endif ()
 
 if(NOT OSX_FRAMEWORK)
