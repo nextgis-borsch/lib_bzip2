@@ -75,6 +75,9 @@ endif()
 
 add_definitions(-D_FILE_OFFSET_BITS=64)
 
+set(PACKAGE_NAME ${PROJECT_NAME})
+string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
+
 include(util)
 check_version(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
@@ -156,9 +159,6 @@ target_compile_definitions(bzip2 PUBLIC BZ_IMPORT)
 add_executable(bzip2recover bzip2recover.c)
 target_link_libraries(bzip2recover ${LIB_NAME})
 target_compile_definitions(bzip2recover PUBLIC BZ_IMPORT)
-
-set(PACKAGE_NAME ${PROJECT_NAME})
-string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
 
 if (NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
     install(TARGETS ${LIB_NAME}
